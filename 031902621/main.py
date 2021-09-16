@@ -139,6 +139,12 @@ class DFAUtils(object):
         return matched_word_list, match_flag
 
     def write_mes(self, word_path='', org_path=''):
+        """
+        写入字典树中
+        :param word_path: 敏感词路径
+        :param org_path: 待测文本路径
+        :return:
+        """
         global pos
         if len(word_path) > 0 and len(org_path) > 0:
             io_error(word_path)
@@ -161,6 +167,11 @@ class DFAUtils(object):
             pos += 1
 
     def run(self, ans_path):
+        """
+        输出答案到ans_path
+        :param ans_path:
+        :return:
+        """
         out_ans = []
         total = 0
         for i in range(len(self.org)):
@@ -177,6 +188,12 @@ class DFAUtils(object):
 
 
 def get_word(word_path, org_path):
+    """
+    将敏感词文本和待测文本转换成列表返回
+    :param word_path: 敏感词路径
+    :param org_path: 待测文本路径
+    :return:
+    """
     word = []
     org = []
     with open(word_path, 'r', encoding='UTF-8') as f:
@@ -261,7 +278,7 @@ if __name__ == "__main__":
         o_path = sys.argv[2]
         a_path = sys.argv[3]
     else:
-        print("命令行参数输入数错误！")
+        print("命令行参数输入个数错误！")
         exit()
     dfa = DFAUtils()
     dfa.write_mes(w_path, o_path)

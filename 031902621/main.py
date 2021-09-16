@@ -261,7 +261,7 @@ if __name__ == "__main__":
         o_path = sys.argv[2]
         a_path = sys.argv[3]
     else:
-        print("输入路径有误！")
+        print("命令行参数输入数错误！")
         exit()
     dfa = DFAUtils()
     dfa.write_mes(w_path, o_path)

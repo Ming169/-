@@ -1,7 +1,8 @@
 from pypinyin import Style, lazy_pinyin
 import Han_Zi
 import sys
-import time
+
+
 # 全局变量用来定位属于word中哪个敏感词
 pos = 1
 # 返回dfs结果
@@ -137,32 +138,24 @@ class DFAUtils(object):
             i += 1
         return matched_word_list, match_flag
 
-    def is_contain(self, txt):
-        """
-        判断文字是否包含敏感字符
-        :param txt:待检测的文本
-        :return:若包含返回true，否则返回false
-        """
-        flag = False
-        for i in range(len(txt)):
-            match_flag = self.check_match_word(txt, i)[0]
-            if match_flag > 0:
-                flag = True
-        return flag
-
     def write_mes(self, word_path='', org_path=''):
         global pos
         if len(word_path) > 0 and len(org_path) > 0:
+            io_error(word_path)
+            io_error(org_path)
             self.word, self.org = get_word(word_path, org_path)
         for i in self.word:
-            if i == ''.join(lazy_pinyin(i)):
-                self.add_word(''.join(lazy_pinyin(i)).lower())
+            w_tmp = ''.join(lazy_pinyin(i))
+            if i == w_tmp:
+                self.add_word(w_tmp.lower())
             else:
                 dfs_res.clear()
                 tes = []
-                for j in lazy_pinyin(i):
+                pinyin_tmp = lazy_pinyin(i)
+                first_pinyin_tmp = lazy_pinyin(i, style=Style.FIRST_LETTER)
+                for j in pinyin_tmp:
                     tes.append(list(j))
-                dfs(lazy_pinyin(i), lazy_pinyin(i, style=Style.FIRST_LETTER), tes, Han_Zi.han_search(i), -1, len(i))
+                dfs(pinyin_tmp, first_pinyin_tmp, tes, Han_Zi.han_search(i), -1, len(i))
                 for j in dfs_res:
                     self.add_word(flat(j))
             pos += 1
@@ -171,8 +164,8 @@ class DFAUtils(object):
         out_ans = []
         total = 0
         for i in range(len(self.org)):
-            if self.is_contain(self.org[i]):
-                result, flag = dfa.get_match_word(self.org[i])
+            result, flag = dfa.get_match_word(self.org[i])
+            if len(result) > 0:
                 for j in range(len(result)):
                     total += 1
                     out_ans.append("Line{}: <{}> {}\n".format(i + 1, self.word[flag[j] - 1], result[j]))
@@ -191,7 +184,7 @@ def get_word(word_path, org_path):
             word.append(i.strip('\n'))
     with open(org_path, 'r', encoding='UTF-8') as f:
         for i in f.readlines():
-            org.append(i.strip('\n').strip('\u3000')+'$')
+            org.append(i.strip('\n').strip('\u3000') + '$')
     return word, org
 
 
@@ -231,6 +224,16 @@ def dfs(text1, text2, text3, text4, cur_pos, max_pos, res=[]):
         res.pop()
 
 
+def io_error(file):
+    try:
+        fh = open(file, "r")
+    except IOError:
+        print("Error: 没有找到文件或读取文件失败")
+        exit()
+    else:
+        fh.close()
+
+
 def flat(a):
     """
     去掉嵌套在列表中的列表
@@ -248,21 +251,20 @@ def flat(a):
 
 
 if __name__ == "__main__":
-    start = time.time()
+    # start = time.time()
     if len(sys.argv) == 1:
-        w_path = 'words.txt'
-        o_path = 'org.txt'
-        a_path = 'ans.txt'
+        w_path = 'example/words.txt'
+        o_path = 'example/org.txt'
+        a_path = 'example/ans.txt'
     elif len(sys.argv) == 4:
         w_path = sys.argv[1]
         o_path = sys.argv[2]
         a_path = sys.argv[3]
     else:
-        print("输入有误！")
+        print("输入路径有误！")
         exit()
     dfa = DFAUtils()
     dfa.write_mes(w_path, o_path)
     dfa.run(a_path)
-    end = time.time()
-    print(end-start)
-    # cProfile.run('main()')
+    # end = time.time()
+    # print(end - start)

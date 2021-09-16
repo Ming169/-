@@ -1706,5 +1706,5 @@ def han_search(word):
 
 
 if __name__ == "__main__":
-    s = '发轮功'
+    s = '卧槽'
     print(han_search(s))

@@ -194,7 +194,7 @@ def dfs(text1, text2, text3, text4, cur_pos, max_pos, res=[]):
     :param text1: 汉字拼音组例如['ni','hao']
     :param text2: 汉字首字母组合['n','h']
     :param text3: 汉字拼音组例如[['n','i'],['h','a','o']]
-    :param text4: 偏旁部首组例如['亻','尔','女','子']
+    :param text4: 偏旁部首组例如[['亻','尔'],['女','子']]
     :param cur_pos:当前位置+1
     :param max_pos:最大长度
     :param res:
@@ -252,11 +252,11 @@ def flat(a):
 
 if __name__ == "__main__":
     # start = time.time()
-    if len(sys.argv) == 1:
+    '''if len(sys.argv) == 1:
         w_path = 'example/words.txt'
         o_path = 'example/org.txt'
-        a_path = 'example/ans.txt'
-    elif len(sys.argv) == 4:
+        a_path = 'example/ans.txt'''
+    if len(sys.argv) == 4:
         w_path = sys.argv[1]
         o_path = sys.argv[2]
         a_path = sys.argv[3]
